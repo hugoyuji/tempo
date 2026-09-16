@@ -1,6 +1,4 @@
-let isPanelVisible = true;
 let isExtensionActive = true;
-let inactivityTimer = null;
 
 function isDarkMode() {
   return document.documentElement.hasAttribute('dark') ||
@@ -17,7 +15,7 @@ function injectStyles() {
       position: absolute;
       top: 15px;
       left: 15px;
-      z-index: 999999;
+      z-index: 2147483647 !important;
       padding: 5px 8px;
       border-radius: 12px;
       font-family: Arial, sans-serif;
@@ -28,6 +26,7 @@ function injectStyles() {
       transition: opacity 0.3s ease, background 0.3s, color 0.3s;
       opacity: 1;
       display: inline-block;
+      pointer-events: auto !important;
     }
 
     .speed-panel-overlay.hidden-autohide {
@@ -53,7 +52,7 @@ function injectStyles() {
     }
     .speed-panel-overlay.light-mode .ctrl-btn {
       background: rgba(255, 255, 255, 0.35);
-      color: rgba(35, 38, 42, 0.92);
+      color: #ffffff;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
@@ -93,7 +92,7 @@ function injectStyles() {
       opacity: 1;
       margin: 0 2px;
       transform: scale(1);
-      pointer-events: auto;
+      pointer-events: auto !important;
     }
 
     .ctrl-btn:active {
@@ -116,6 +115,10 @@ function injectStyles() {
 
 function getMediaElements() {
   return Array.from(document.querySelectorAll('video, audio'));
+}
+
+function getPlayerContainer(media) {
+  return media.closest('#movie_player, .html5-video-player, .video-js, [class*="player-container"], [class*="player"]') || media.parentElement;
 }
 
 function syncYouTubeUI(rate) {
@@ -170,9 +173,10 @@ function handleMediaAction(media, action) {
 function createPanel(media) {
   if (!isExtensionActive) return;
   injectStyles();
-  if (!media.parentElement || media.parentElement.querySelector('.speed-panel-overlay')) return;
 
-  const container = media.parentElement;
+  const container = getPlayerContainer(media);
+  if (!container || container.querySelector('.speed-panel-overlay')) return;
+
   if (getComputedStyle(container).position === 'static') {
     container.style.position = 'relative';
   }
@@ -197,19 +201,20 @@ function createPanel(media) {
   panel.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.preventDefault();
       const action = btn.getAttribute('data-act');
       handleMediaAction(media, action);
     });
   });
 
-  setupAutoHide(container);
+  setupAutoHide(container, panel);
 }
 
 function makeDraggable(el) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   const header = el.querySelector('.main-bar');
 
-  header.onmousedown = (e) => {
+  header.addEventListener('mousedown', (e) => {
     if (e.target.tagName === 'BUTTON') return;
 
     e.stopPropagation();
@@ -217,12 +222,7 @@ function makeDraggable(el) {
     pos3 = e.clientX;
     pos4 = e.clientY;
 
-    document.onmouseup = () => {
-      document.onmouseup = null;
-      document.onmousemove = null;
-    };
-
-    document.onmousemove = (e) => {
+    const onMouseMove = (e) => {
       e.stopPropagation();
       e.preventDefault();
       pos1 = pos3 - e.clientX;
@@ -232,41 +232,85 @@ function makeDraggable(el) {
       el.style.top = (el.offsetTop - pos2) + "px";
       el.style.left = (el.offsetLeft - pos1) + "px";
     };
-  };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 }
 
-function setupAutoHide(container) {
+function setupAutoHide(container, panel) {
+  panel._isHovered = false;
+
+  panel.addEventListener('mouseenter', () => {
+    panel._isHovered = true;
+    panel.classList.remove('hidden-autohide');
+    if (panel._autohideTimer) clearTimeout(panel._autohideTimer);
+  });
+
+  panel.addEventListener('mouseleave', () => {
+    panel._isHovered = false;
+    resetTimer();
+  });
+
   const resetTimer = () => {
     if (!isExtensionActive) return;
-    const panels = container.querySelectorAll('.speed-panel-overlay');
-    panels.forEach(p => p.classList.remove('hidden-autohide'));
+    panel.classList.remove('hidden-autohide');
 
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-      if (isExtensionActive) {
-        panels.forEach(p => p.classList.add('hidden-autohide'));
+    if (panel._autohideTimer) clearTimeout(panel._autohideTimer);
+
+    panel._autohideTimer = setTimeout(() => {
+      if (isExtensionActive && !panel._isHovered) {
+        panel.classList.add('hidden-autohide');
       }
     }, 3000);
   };
 
-  container.addEventListener('mousemove', resetTimer);
-  container.addEventListener('mouseleave', () => {
-    if (isExtensionActive) {
+  if (!container._hasSpeedOverlayEvents) {
+    container._hasSpeedOverlayEvents = true;
+
+    container.addEventListener('mousemove', () => {
       const panels = container.querySelectorAll('.speed-panel-overlay');
-      panels.forEach(p => p.classList.add('hidden-autohide'));
-    }
-  });
+      panels.forEach(p => {
+        if (p._resetTimer) p._resetTimer();
+      });
+    });
+
+    container.addEventListener('mouseleave', (e) => {
+      if (e.relatedTarget && container.contains(e.relatedTarget)) return;
+
+      if (!isExtensionActive) return;
+      const panels = container.querySelectorAll('.speed-panel-overlay');
+      panels.forEach(p => {
+        if (!p._isHovered) {
+          p.classList.add('hidden-autohide');
+        }
+      });
+    });
+  }
+
+  panel._resetTimer = resetTimer;
+  resetTimer();
 }
 
 window.addEventListener('keydown', (e) => {
-  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) || document.activeElement.isContentEditable) return;
 
   const key = e.key.toLowerCase();
 
   if (key === 'h') {
     isExtensionActive = !isExtensionActive;
     if (!isExtensionActive) {
-      document.querySelectorAll('.speed-panel-overlay').forEach(p => p.remove());
+      document.querySelectorAll('.speed-panel-overlay').forEach(p => {
+        if (p._autohideTimer) clearTimeout(p._autohideTimer);
+        p.remove();
+      });
+    } else {
+      getMediaElements().forEach(createPanel);
     }
     return;
   }
@@ -282,7 +326,7 @@ window.addEventListener('keydown', (e) => {
 });
 
 function updateDisplay(media) {
-  const container = media.parentElement;
+  const container = getPlayerContainer(media);
   if (!container) return;
   const display = container.querySelector('.speed-display');
   if (display) display.innerText = media.playbackRate.toFixed(2);
