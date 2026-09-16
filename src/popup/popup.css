@@ -1,0 +1,49 @@
+body {
+  width: 200px;
+  background-color: #181a1f;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  padding: 16px;
+  border-radius: 20px;
+  margin: 0;
+}
+
+.display {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+button {
+  background: #21242b;
+  border: none;
+  color: #8b92a5;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: -2px -2px 5px rgba(255,255,255,0.03), 
+              3px 3px 8px rgba(0,0,0,0.4);
+  transition: all 0.1s ease;
+}
+
+button:active {
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+  color: #0088ff;
+}
+
+.btn-destaque {
+  grid-column: span 2;
+  background: #0088ff;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 136, 255, 0.3);
+}
