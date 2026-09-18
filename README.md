@@ -6,7 +6,7 @@ Tendo em mãos o maior incentivo que poderia cair em meus braços, um pingo da n
 
 ## ✨ Funcionalidades
 
-* **Suporte a Plataformas** Plataformas de streaming como Amazon Prime Video não oferecem nativamente o suporte para controle de velocidade, além de oferecer controle personalizado para plataformas que já possuem esse controle, mas que engessam as opções (pulando de 1.0x direto para 1.5x, sem meio-termo).
+* **Suporte a Plataformas:** Plataformas de streaming como Amazon Prime Video não oferecem nativamente o suporte para controle de velocidade, além de oferecer controle personalizado para plataformas que já possuem esse controle, mas que engessam as opções (pulando de 1.0x direto para 1.5x, sem meio-termo).
 * **Injeção Transparente:** O painel flutuante se sobrepõe ao player de vídeo sem quebrar a interface nativa (mesmo quando o vídeo é pausado).
 * **Painel Arrastável (Drag & Drop):** Posicione o controlador em qualquer lugar da tela para não atrapalhar as legendas ou elementos importantes.
 * **Modo Claro/Escuro Automático:** A interface do controlador se adapta automaticamente ao tema do seu sistema operacional.
