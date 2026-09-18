@@ -18,7 +18,7 @@ Como a extensão é focada em transparência e código aberto, a instalação vi
 
 1. Faça o download deste projeto clicando no botão **Code > Download ZIP** no GitHub (ou clone via Git).
 2. Extraia o arquivo `.zip` em uma pasta no seu computador.
-3. Abra o seu navegador e abra a aba de extensões, como ao digitar na barra de endereços do Chrome: `chrome://extensions/`.
+3. Abra o seu navegador e entre na aba de extensões, como ao digitar na barra de endereços do Chrome: `chrome://extensions/`.
 4. No canto superior direito da tela, ative a chave **Modo do desenvolvedor**.
 5. No canto superior esquerdo, clique no botão **Carregar sem compactação** (ou *Load unpacked*).
 6. Selecione a pasta onde você extraiu os arquivos do projeto. Pronto! A extensão já está ativa e segura para uso.
