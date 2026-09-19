@@ -25,7 +25,7 @@ Como a extensão é focada em transparência e código aberto, a instalação vi
 
 **Para que a extensão funcione de forma adequada, é importante que se você extraiu o arquivo zipado, provavelmente você terá que abrir a pasta de dentro dele durante a seleção. Caso contrário, um erro poderá apontar a falha no reconhecimento do arquivo `manifest.json`.**
 
-## ▶️ Como Usar
+## ⚙️ Como Usar
 
 **Atalhos de Teclado:**
 
