@@ -2,7 +2,7 @@
 
 Esse foi um projeto despretensioso que surgiu a partir de uma necessidade com a qual eu e alguns amigos nos deparamos. Um hábito muito comum, que se familiarizou entre nós, foi o de assistir a vídeos, especialmente aulas, em velocidades mais altas. No entanto, esse costume fez com que eu enxergasse dois pontos conflitantes: nem todas as plataformas, como os sites da faculdade, ofereciam players de multimídia com suporte para velocidades mais altas, e a resolução clara para isso seria, justamente, através das extensões. Contudo, tanto eu quanto eles sentíamos a mesma coisa — parecia que as extensões não eram seguras ou transparentes o suficiente. Era como fazer uso de algo que poderia, a qualquer momento, acessar algum dado sensível seu, e não haveria muito como controlar.
 
-Tendo em mãos, o incentivo de uma necessidade por algo que eu e meus amigos poderiam desfrutar com maior conforto, inclusive no sentido de adaptar a extensão e podendo adicionar funcionalidades personalizadas, eu decidi desenvolver e deixar essa extensão de código aberto (*open-source*), transparente e focada em privacidade. Ela não pede permissões intrusivas e permite que qualquer um valide o código, utilize com segurança e até contribua com melhorias.
+Tendo em mãos, o incentivo de uma necessidade por algo que eu e meus amigos poderiam desfrutar com maior conforto, inclusive no sentido de adaptar a extensão e podendo adicionar funcionalidades personalizadas, eu decidi desenvolver e deixar essa extensão de código aberto (*open-source*), transparente e focada em privacidade. Ela não pede permissões invasivas e permite que qualquer um valide o código, utilize com segurança e até contribua com melhorias.
 
 ## ✨ Funcionalidades
 
