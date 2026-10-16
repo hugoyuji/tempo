@@ -114,10 +114,28 @@ function injectStyles() {
 }
 
 function getMediaElements() {
-  return Array.from(document.querySelectorAll('video, audio'));
+  const media = Array.from(document.querySelectorAll('video, audio'));
+  if (window.location.hostname.endsWith('tiktok.com')) {
+    const visible = media.filter((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return element.tagName === 'VIDEO' && rect.width > 0 && rect.height > 0 &&
+        style.visibility !== 'hidden' && style.display !== 'none';
+    });
+    visible.sort((a, b) => {
+      const ar = a.getBoundingClientRect();
+      const br = b.getBoundingClientRect();
+      return br.width * br.height - ar.width * ar.height;
+    });
+    return visible.slice(0, 1);
+  }
+  return media;
 }
 
 function getPlayerContainer(media) {
+  if (window.location.hostname.endsWith('tiktok.com')) {
+    return media.closest('[data-e2e="video-player"], [class*="DivVideoWrapper"], [class*="video-player"]') || media.parentElement;
+  }
   return media.closest('#movie_player, .html5-video-player, .video-js, [class*="player-container"], [class*="player"]') || media.parentElement;
 }
 
@@ -177,7 +195,7 @@ function createPanel(media) {
   const container = getPlayerContainer(media);
   if (!container || container.querySelector('.speed-panel-overlay')) return;
 
-  if (getComputedStyle(container).position === 'static') {
+  if (!window.location.hostname.endsWith('tiktok.com') && getComputedStyle(container).position === 'static') {
     container.style.position = 'relative';
   }
 
@@ -342,12 +360,15 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-setInterval(() => {
-  if (!isExtensionActive) return;
-  const dark = isDarkMode();
-  document.querySelectorAll('.speed-panel-overlay').forEach(p => {
-    p.classList.toggle('dark-mode', dark);
-    p.classList.toggle('light-mode', !dark);
-  });
-  getMediaElements().forEach(createPanel);
-}, 1000);
+function scanMedia() {
+  if (isExtensionActive) {
+    const dark = isDarkMode();
+    document.querySelectorAll('.speed-panel-overlay').forEach(p => {
+      p.classList.toggle('dark-mode', dark);
+      p.classList.toggle('light-mode', !dark);
+    });
+    getMediaElements().forEach(createPanel);
+  }
+  setTimeout(scanMedia, window.location.hostname.endsWith('tiktok.com') ? 2500 : 1500);
+}
+scanMedia();
