@@ -1,49 +1,156 @@
 body {
-  width: 200px;
+  color-scheme: light dark;
+  width: 300px;
+  margin: 0;
   background-color: #181a1f;
   color: #ffffff;
   font-family: Arial, sans-serif;
-  padding: 16px;
+  box-sizing: border-box;
   border-radius: 20px;
-  margin: 0;
+  overflow: hidden;
 }
 
-.display {
-  font-size: 28px;
-  font-weight: bold;
-  text-align: right;
-  margin-bottom: 16px;
+.tutorial {
+  padding: 20px;
+}
+
+.brand-title {
+  margin: 0 0 16px;
   color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-align: center;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-button {
-  background: #21242b;
-  border: none;
+h2 {
+  margin: 0 0 10px;
   color: #8b92a5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.shortcut-section {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  border-radius: 14px;
+  background: #21242b;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.shortcut-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  color: #e5e7eb;
+  font-size: 12px;
+}
+
+.shortcut-row + .shortcut-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.key {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  background: #181a1f;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.step {
+  color: #8b92a5;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.tip {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
   padding: 12px;
-  font-size: 14px;
-  font-weight: bold;
   border-radius: 12px;
-  cursor: pointer;
-  box-shadow: -2px -2px 5px rgba(255,255,255,0.03), 
-              3px 3px 8px rgba(0,0,0,0.4);
-  transition: all 0.1s ease;
+  background: rgba(0, 136, 255, 0.09);
+  color: #c7d8e8;
 }
 
-button:active {
-  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+.tip-icon {
   color: #0088ff;
+  font-size: 16px;
+  line-height: 1.2;
 }
 
-.btn-destaque {
-  grid-column: span 2;
-  background: #0088ff;
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 136, 255, 0.3);
+.tip p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.tip strong {
+  color: #fff;
+}
+
+footer {
+  margin-top: 14px;
+  color: #737b8d;
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #f4f6fa;
+    color: #181a1f;
+  }
+
+  .shortcut-section {
+    border-color: rgba(24, 26, 31, 0.06);
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(25, 35, 55, 0.08);
+  }
+
+  h2,
+  .step,
+  footer {
+    color: #737b8d;
+  }
+
+  .brand-title {
+    color: #181a1f;
+  }
+
+  .shortcut-row {
+    color: #343944;
+  }
+
+  .shortcut-row + .shortcut-row {
+    border-color: rgba(24, 26, 31, 0.08);
+  }
+
+  .key {
+    border-color: rgba(24, 26, 31, 0.1);
+    background: #f4f6fa;
+    color: #181a1f;
+    box-shadow: 0 2px 4px rgba(25, 35, 55, 0.08);
+  }
+
+  .tip {
+    background: rgba(0, 136, 255, 0.08);
+    color: #344b62;
+  }
+
+  .tip strong {
+    color: #182536;
+  }
 }

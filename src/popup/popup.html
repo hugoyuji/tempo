@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +7,32 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+  <main class="tutorial">
+    <h1 class="brand-title">Tempo</h1>
+    <section class="shortcut-section" aria-labelledby="shortcut-title">
+      <h2 id="shortcut-title">Atalhos do teclado</h2>
+      <div class="shortcut-row">
+        <span class="key">A</span>
+        <span>Diminuir velocidade</span>
+        <span class="step">−0,10×</span>
+      </div>
+      <div class="shortcut-row">
+        <span class="key">D</span>
+        <span>Aumentar velocidade</span>
+        <span class="step">+0,10×</span>
+      </div>
+      <div class="shortcut-row">
+        <span class="key">H</span>
+        <span>Mostrar ou ocultar o painel</span>
+        <span class="step">liga/desliga</span>
+      </div>
+    </section>
 
-  <div class="display" id="current-speed">1.00</div>
-
-  <div class="speed-grid">
-    <button type="button" id="btn-rewind" title="Rewind 10s">«</button>
-    <button type="button" id="btn-decrease" title="Decrease speed">-</button>
-    <button type="button" id="btn-increase" title="Increase speed">+</button>
-    <button type="button" id="btn-forward" title="Forward 10s">»</button>
-  </div>
-
-  <script src="popup.js"></script>
+    <section class="tip" aria-label="Dica">
+      <span class="tip-icon" aria-hidden="true">✦</span>
+      <p>No painel do vídeo, use <strong>«</strong> e <strong>»</strong> para voltar ou avançar 10 segundos. Arraste o indicador para reposicioná-lo.</p>
+    </section>
+    <footer>Os atalhos funcionam enquanto você navega pelo vídeo.</footer>
+  </main>
 </body>
 </html>
