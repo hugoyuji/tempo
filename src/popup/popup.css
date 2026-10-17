@@ -16,11 +16,15 @@ body {
 
 .brand-title {
   margin: 0 0 16px;
-  color: #ffffff;
+  color: #458cf5;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.2px;
   text-align: center;
+  background-image: linear-gradient(110deg, #1746d2 0%, #1d74f5 52%, #59d5ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 h2 {
@@ -84,12 +88,6 @@ h2 {
   color: #c7d8e8;
 }
 
-.tip-icon {
-  color: #0088ff;
-  font-size: 16px;
-  line-height: 1.2;
-}
-
 .tip p {
   margin: 0;
   font-size: 11px;
@@ -124,10 +122,6 @@ footer {
   .step,
   footer {
     color: #737b8d;
-  }
-
-  .brand-title {
-    color: #181a1f;
   }
 
   .shortcut-row {
