@@ -136,7 +136,7 @@ function getPlayerContainer(media) {
   if (window.location.hostname.endsWith('tiktok.com')) {
     return media.closest('[data-e2e="video-player"], [class*="DivVideoWrapper"], [class*="video-player"]') || media.parentElement;
   }
-  return media.closest('#movie_player, .html5-video-player, .video-js, [class*="player-container"], [class*="player"]') || media.parentElement;
+  return media.closest('#movie_player, .html5-video-player, .video-js, [data-vjs-player], [data-vjs-video]:not(video):not(audio), [class*="player-container"], [class*="player"]') || media.parentElement;
 }
 
 function syncYouTubeUI(rate) {
