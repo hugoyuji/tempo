@@ -41,6 +41,10 @@ Você pode segurar os botões para aumentar ou diminuir mais rápido.
 * Clique no botão **`«`** para retroceder o vídeo em 10 segundos.
 * Clique e segure entre os botões para **arrastar o painel** livremente pela tela.
 
+## 🔒 Privacidade e permissões
+
+Para detectar players em diferentes sites e em players incorporados por iframe, a extensão injeta seu content script em todas as páginas e frames. O navegador pode, por isso, solicitar acesso a todos os sites. Os controles atuam localmente nos elementos de mídia; a extensão não envia dados de navegação para servidores.
+
 ## 🚀 Tecnologias Utilizadas
 
 <div align="left">
