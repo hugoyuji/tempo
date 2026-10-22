@@ -162,16 +162,24 @@ function syncYouTubeUI(rate) {
 function updateDisplay(media) {
   const panel = media._tempoPanel;
   const display = panel?.querySelector('.speed-panel-display');
-  if (display) display.textContent = media.playbackRate.toFixed(2);
+  if (display) display.textContent = formatPlaybackRate(media.playbackRate);
+}
+
+function formatPlaybackRate(rate) {
+  return Number(rate.toFixed(2)).toString();
+}
+
+function normalizePlaybackRate(rate) {
+  return Math.round(rate * 10) / 10;
 }
 
 function handleMediaAction(media, action) {
   if (!isExtensionActive || !media.isConnected) return;
 
   if (action === 'increase') {
-    media.playbackRate = Math.min(media.playbackRate + 0.1, 16);
+    media.playbackRate = normalizePlaybackRate(Math.min(media.playbackRate + 0.1, 16));
   } else if (action === 'decrease') {
-    media.playbackRate = Math.max(media.playbackRate - 0.1, 0.1);
+    media.playbackRate = normalizePlaybackRate(Math.max(media.playbackRate - 0.1, 0.1));
   } else if (action === 'rewind') {
     media.currentTime = Math.max(media.currentTime - 10, 0);
   } else if (action === 'forward') {
@@ -284,7 +292,7 @@ function createPanel(media) {
   const controls = [
     ['rewind', '«', 'Voltar 10 segundos'],
     ['decrease', '-', 'Diminuir velocidade'],
-    ['display', media.playbackRate.toFixed(2), 'Velocidade atual'],
+    ['display', formatPlaybackRate(media.playbackRate), 'Velocidade atual'],
     ['increase', '+', 'Aumentar velocidade'],
     ['forward', '»', 'Avançar 10 segundos']
   ];
