@@ -166,7 +166,8 @@ function updateDisplay(media) {
 }
 
 function formatPlaybackRate(rate) {
-  return Number(rate.toFixed(2)).toString();
+  const formattedRate = Number(rate.toFixed(2)).toString();
+  return formattedRate.includes('.') ? formattedRate : `${formattedRate}.0`;
 }
 
 function normalizePlaybackRate(rate) {
