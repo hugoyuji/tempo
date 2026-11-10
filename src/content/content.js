@@ -1,24 +1,19 @@
 (() => {
   'use strict';
 
-  const HOSTNAME = window.location.hostname;
-  const IS_YOUTUBE = HOSTNAME.includes('youtube.com');
-  const IS_TIKTOK = HOSTNAME.endsWith('tiktok.com');
-
   const HOST_TAG = 'tempo-panel';
-  const RATE_STEP = 0.1;
-  const RATE_MIN = 0.1;
-  const RATE_MAX = 16;
+  const IS_YOUTUBE = location.hostname.includes('youtube.com');
+  const IS_TIKTOK = location.hostname.endsWith('tiktok.com');
+
+  const RATE = { step: 0.1, min: 0.1, max: 16 };
   const SEEK_SECONDS = 10;
   const AUTOHIDE_MS = 3000;
   const SCAN_DELAY_MS = 150;
-  const MIN_VIDEO_WIDTH = 160;
-  const MIN_VIDEO_HEIGHT = 90;
+  const MIN_VIDEO = { width: 160, height: 90 };
   const PANEL_MARGIN = 15;
   const PANEL_MAX_WIDTH = 180;
-  const UI_SCALE = 1;
 
-  let isExtensionActive = true;
+  let extensionActive = true;
   let savedOffset = null;
   const controllers = new Map();
 
@@ -43,22 +38,21 @@
     *, *::before, *::after { box-sizing: border-box; }
 
     .panel {
-      --s: 1;
       position: absolute;
       left: 0;
       top: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: calc(5px * var(--s)) calc(8px * var(--s));
-      border-radius: calc(12px * var(--s));
+      padding: 5px 8px;
+      border-radius: 12px;
       font-family: Arial, sans-serif;
       cursor: move;
       user-select: none;
       -webkit-user-select: none;
       touch-action: none;
-      -webkit-backdrop-filter: blur(3px);
       backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
       transition: opacity 0.3s ease, background 0.3s, color 0.3s;
       opacity: 1;
       pointer-events: auto;
@@ -85,9 +79,9 @@
     }
 
     .display {
-      min-width: calc(38px * var(--s));
-      padding: calc(2px * var(--s)) calc(6px * var(--s));
-      font-size: calc(13px * var(--s));
+      min-width: 38px;
+      padding: 2px 6px;
+      font-size: 13px;
       font-weight: bold;
       text-align: center;
       white-space: nowrap;
@@ -101,18 +95,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: calc(24px * var(--s));
-      height: calc(24px * var(--s));
+      width: 24px;
+      height: 24px;
       max-width: 0;
       margin: 0;
       padding: 0;
       overflow: hidden;
-      border-radius: calc(6px * var(--s));
+      border-radius: 6px;
       background: var(--btn-bg);
       color: var(--btn-fg);
       box-shadow: var(--btn-shadow);
       font-family: system-ui, sans-serif;
-      font-size: calc(11px * var(--s));
+      font-size: 11px;
       font-weight: bold;
       cursor: pointer;
       opacity: 0;
@@ -124,8 +118,8 @@
 
     .panel:hover button,
     .panel:focus-within button {
-      max-width: calc(28px * var(--s));
-      margin: 0 calc(2px * var(--s));
+      max-width: 28px;
+      margin: 0 2px;
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
@@ -142,17 +136,11 @@
   let sharedSheet = null;
 
   function adoptStyles(root) {
-    try {
-      if (!sharedSheet) {
-        sharedSheet = new CSSStyleSheet();
-        sharedSheet.replaceSync(PANEL_CSS);
-      }
-      root.adoptedStyleSheets = [sharedSheet];
-    } catch (error) {
-      const style = document.createElement('style');
-      style.textContent = PANEL_CSS;
-      root.appendChild(style);
+    if (!sharedSheet) {
+      sharedSheet = new CSSStyleSheet();
+      sharedSheet.replaceSync(PANEL_CSS);
     }
+    root.adoptedStyleSheets = [sharedSheet];
   }
 
   function applyImportant(element, styles) {
@@ -164,7 +152,7 @@
   function isDarkMode() {
     return document.documentElement.hasAttribute('dark') ||
       document.body?.classList.contains('dark-theme') ||
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
+      matchMedia('(prefers-color-scheme: dark)').matches;
   }
 
   function refreshTheme() {
@@ -176,13 +164,13 @@
     }
   }
 
-  function formatPlaybackRate(rate) {
-    const formattedRate = Number(rate.toFixed(2)).toString();
-    return formattedRate.includes('.') ? formattedRate : `${formattedRate}.0`;
+  function formatRate(rate) {
+    const text = Number(rate.toFixed(2)).toString();
+    return text.includes('.') ? text : `${text}.0`;
   }
 
   function clampRate(rate) {
-    return Math.round(Math.min(Math.max(rate, RATE_MIN), RATE_MAX) * 10) / 10;
+    return Math.round(Math.min(Math.max(rate, RATE.min), RATE.max) * 10) / 10;
   }
 
   function containsDeep(ancestor, node) {
@@ -193,19 +181,17 @@
   }
 
   function isUsableRect(rect) {
-    return (
-      rect.width >= MIN_VIDEO_WIDTH &&
-      rect.height >= MIN_VIDEO_HEIGHT &&
+    return rect.width >= MIN_VIDEO.width &&
+      rect.height >= MIN_VIDEO.height &&
       rect.bottom > 0 &&
       rect.right > 0 &&
-      rect.top < window.innerHeight &&
-      rect.left < window.innerWidth
-    );
+      rect.top < innerHeight &&
+      rect.left < innerWidth;
   }
 
   function visibleArea(rect) {
-    const width = Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0);
-    const height = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    const width = Math.min(rect.right, innerWidth) - Math.max(rect.left, 0);
+    const height = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
     return Math.max(width, 0) * Math.max(height, 0);
   }
 
@@ -230,26 +216,26 @@
 
   function syncYouTubeUI(rate) {
     if (!IS_YOUTUBE) return;
-    const formattedRate = Number(rate.toFixed(2));
+    const formatted = Number(rate.toFixed(2));
 
     try {
-      const moviePlayer = document.getElementById('movie_player');
-      if (typeof moviePlayer?.setPlaybackRate === 'function') moviePlayer.setPlaybackRate(formattedRate);
-    } catch (error) {}
+      const player = document.getElementById('movie_player');
+      if (typeof player?.setPlaybackRate === 'function') player.setPlaybackRate(formatted);
+    } catch {}
 
     try {
       sessionStorage.setItem('yt-player-playback-rate', JSON.stringify({
-        data: formattedRate.toString(),
+        data: formatted.toString(),
         creation: Date.now()
       }));
-    } catch (error) {}
+    } catch {}
 
-    const speedItem = Array.from(document.querySelectorAll('.ytp-menuitem')).find((item) => {
-      const icon = item.querySelector('.ytp-menuitem-icon');
-      return icon && item.textContent.toLowerCase().includes('velocidade');
-    });
+    const speedItem = [...document.querySelectorAll('.ytp-menuitem')].find((item) =>
+      item.querySelector('.ytp-menuitem-icon') &&
+      item.textContent.toLowerCase().includes('velocidade')
+    );
     const content = speedItem?.querySelector('.ytp-menuitem-content');
-    if (content) content.textContent = formattedRate === 1 ? 'Normal' : `${formattedRate}x`;
+    if (content) content.textContent = formatted === 1 ? 'Normal' : `${formatted}x`;
   }
 
   class Controller {
@@ -278,23 +264,22 @@
       panel.className = `panel ${isDarkMode() ? 'dark-mode' : 'light-mode'}`;
       panel.setAttribute('role', 'group');
       panel.setAttribute('aria-label', 'Controle de velocidade');
-      panel.style.setProperty('--s', String(UI_SCALE));
       this.panel = panel;
 
       const controls = [
-        ['rewind', '«', 'Voltar 10 segundos'],
-        ['decrease', '-', 'Diminuir velocidade'],
-        ['display', formatPlaybackRate(this.media.playbackRate), 'Velocidade atual'],
-        ['increase', '+', 'Aumentar velocidade'],
-        ['forward', '»', 'Avançar 10 segundos']
+        { action: 'rewind', label: '«', name: 'Voltar 10 segundos' },
+        { action: 'decrease', label: '-', name: 'Diminuir velocidade' },
+        { action: 'display', label: formatRate(this.media.playbackRate), name: 'Velocidade atual' },
+        { action: 'increase', label: '+', name: 'Aumentar velocidade' },
+        { action: 'forward', label: '»', name: 'Avançar 10 segundos' }
       ];
 
-      for (const [action, label, accessibleName] of controls) {
+      for (const { action, label, name } of controls) {
         if (action === 'display') {
           const display = document.createElement('span');
           display.className = 'display';
           display.textContent = label;
-          display.setAttribute('aria-label', accessibleName);
+          display.setAttribute('aria-label', name);
           panel.appendChild(display);
           this.display = display;
           continue;
@@ -303,7 +288,7 @@
         const button = document.createElement('button');
         button.type = 'button';
         button.textContent = label;
-        button.setAttribute('aria-label', accessibleName);
+        button.setAttribute('aria-label', name);
         button.addEventListener('click', () => this.act(action));
         panel.appendChild(button);
       }
@@ -348,12 +333,13 @@
         });
         this.applyOffset();
       };
+
       const onEnd = (endEvent) => {
         this.dragging = false;
         savedOffset = { ...this.offset };
         try {
           panel.releasePointerCapture(endEvent.pointerId);
-        } catch (error) {}
+        } catch {}
         panel.removeEventListener('pointermove', onMove);
         panel.removeEventListener('pointerup', onEnd);
         panel.removeEventListener('pointercancel', onEnd);
@@ -417,7 +403,7 @@
     }
 
     clampOffset({ x, y }) {
-      const panelWidth = Math.max(this.panel.offsetWidth, PANEL_MAX_WIDTH * UI_SCALE);
+      const panelWidth = Math.max(this.panel.offsetWidth, PANEL_MAX_WIDTH);
       const maxX = Math.max(this.size.width - panelWidth, 0);
       const maxY = Math.max(this.size.height - this.panel.offsetHeight, 0);
       return { x: Math.min(Math.max(x, 0), maxX), y: Math.min(Math.max(y, 0), maxY) };
@@ -429,7 +415,7 @@
     }
 
     reveal() {
-      if (!isExtensionActive) return;
+      if (!extensionActive) return;
       this.shown = true;
       this.panel.classList.remove('hidden');
       this.place();
@@ -461,17 +447,17 @@
     }
 
     updateDisplay() {
-      this.display.textContent = formatPlaybackRate(this.media.playbackRate);
+      this.display.textContent = formatRate(this.media.playbackRate);
     }
 
     act(action) {
       const { media } = this;
-      if (!isExtensionActive || !media.isConnected) return;
+      if (!extensionActive || !media.isConnected) return;
 
       if (action === 'increase') {
-        media.playbackRate = clampRate(media.playbackRate + RATE_STEP);
+        media.playbackRate = clampRate(media.playbackRate + RATE.step);
       } else if (action === 'decrease') {
-        media.playbackRate = clampRate(media.playbackRate - RATE_STEP);
+        media.playbackRate = clampRate(media.playbackRate - RATE.step);
       } else if (action === 'rewind') {
         media.currentTime = Math.max(media.currentTime - SEEK_SECONDS, 0);
       } else if (action === 'forward') {
@@ -525,13 +511,13 @@
     }
 
     candidates.sort((a, b) => b.area - a.area || Number(a.media.paused) - Number(b.media.paused));
-    if (IS_TIKTOK) return candidates.slice(0, 1).map((candidate) => candidate.media);
+    if (IS_TIKTOK) return candidates.slice(0, 1).map((c) => c.media);
 
     const kept = [];
     for (const candidate of candidates) {
       if (!kept.some((other) => overlapRatio(candidate.rect, other.rect) > 0.6)) kept.push(candidate);
     }
-    return kept.map((candidate) => candidate.media);
+    return kept.map((c) => c.media);
   }
 
   let scanTimer = 0;
@@ -542,7 +528,7 @@
 
   function scan() {
     scanTimer = 0;
-    if (!isExtensionActive) return;
+    if (!extensionActive) return;
 
     const targets = new Set(selectTargets());
     for (const [media, controller] of [...controllers]) {
@@ -567,8 +553,8 @@
   }
 
   function toggleExtension() {
-    isExtensionActive = !isExtensionActive;
-    if (isExtensionActive) {
+    extensionActive = !extensionActive;
+    if (extensionActive) {
       scan();
     } else {
       for (const controller of [...controllers.values()]) controller.destroy();
@@ -584,7 +570,7 @@
       if (!event.repeat) toggleExtension();
       return;
     }
-    if (!isExtensionActive || (key !== 'a' && key !== 'd')) return;
+    if (!extensionActive || (key !== 'a' && key !== 'd')) return;
     getActiveController()?.act(key === 'a' ? 'decrease' : 'increase');
   }, true);
 
@@ -635,7 +621,7 @@
     }
   }).observe(document.documentElement, { childList: true, subtree: true });
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', refreshTheme);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', refreshTheme);
   const themeObserver = new MutationObserver(refreshTheme);
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'dark'] });
   if (document.body) themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'dark'] });
